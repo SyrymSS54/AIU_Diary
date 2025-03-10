@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSController extends Controller
 {
+    /**
+     * Вывод списка пользователей
+     * Method: post
+     * Resource: /users/list
+     * Request: null
+     * Return: json
+     */
     public function list(User $user)
     {
         $users = $user::where("role","NOT LIKE","admin")->paginate(15,['id','first_name','last_name','email','role']);
@@ -18,6 +25,13 @@ class UserSController extends Controller
         return response()->json($users);
     }
 
+    /**
+     * Вывод значение конкретного пользователя
+     * Method: post
+     * Resource: /users/шеуь
+     * Request: id
+     * Return: json
+     */
     public function item(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -27,7 +41,7 @@ class UserSController extends Controller
         $validated_data = $validated->safe()->only(['id']);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back',,'errors'=>$validated->errors()]);
+            return response()->json(['status'=>false,'route'=>'back',,'errors'=>$validated->errors()],422);
         }
 
         $id = $validated_data['id'];
@@ -41,6 +55,13 @@ class UserSController extends Controller
         return response()->json($users);
     }
 
+    /**
+     * Регистрации пользователя
+     * Method: post
+     * Resource: /users/create
+     * Request: first_name last_name email role password
+     * Return: json
+     */
     public function create(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -54,7 +75,7 @@ class UserSController extends Controller
         $validated_data = $validated->safe()->only(["first_name","last_name","email","role","password"]);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()],422);
         }
 
         $first_name = $validated_data['first_name'];
@@ -74,6 +95,14 @@ class UserSController extends Controller
         return response()->json(['status'=>true]);
     }
 
+    /**
+     * Обновил пользователя
+     * Method: post
+     * Resource: /users/update
+     * Request: id, first_name, last_name, email, role, password
+     * Return: json
+     */
+
     public function update(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -88,7 +117,7 @@ class UserSController extends Controller
         $validated_data = $validated->safe()->only(["id","first_name","last_name","email","role","password"]);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()],422);
         }
 
         $id = $validated_data['id'];
@@ -105,6 +134,13 @@ class UserSController extends Controller
         return response()->json(['status'=>true]);
     }
 
+    /**
+     * Удаление пользователя
+     * Method: post
+     * Resource: /users/delete
+     * Request: id
+     * Return: json
+     */
     public function delete(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
@@ -114,7 +150,7 @@ class UserSController extends Controller
         $validated_data = $validated->safe()->only(["id"]);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()],422);
         }
 
         $id = $validated_data['id'];
