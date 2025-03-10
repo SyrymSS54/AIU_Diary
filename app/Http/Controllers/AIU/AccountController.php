@@ -51,8 +51,8 @@ class AccountController extends Controller
         $credentials = $validator->safe()->only(['email','password']);
 
         //отправка ошибок если они есть
-        if(is_null($validator->errors())){
-            return response()->json(['route'=>'back','status'=>false,'reason'=>'validate']);
+        if($validator->fails()){
+            return response()->json(['route'=>'back','status'=>false,'errors'=>$validator->errors()]);
         }
 
         if(Auth::attempt($credentials)){

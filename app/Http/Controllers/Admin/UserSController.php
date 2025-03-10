@@ -26,8 +26,8 @@ class UserSController extends Controller
 
         $validated_data = $validated->safe()->only(['id']);
 
-        if(is_null($validated->errors())){
-            return response()->json(['status'=>false,'route'=>'back','reason'=>'where id']);
+        if($validated->fails()){
+            return response()->json(['status'=>false,'route'=>'back',,'errors'=>$validated->errors()]);
         }
 
         $id = $validated_data['id'];
@@ -53,8 +53,8 @@ class UserSController extends Controller
 
         $validated_data = $validated->safe()->only(["first_name","last_name","email","role","password"]);
 
-        if(is_null($validated->errors())){
-            return response()->json(['status'=>false,'route'=>'back','reason'=>'not validated']);
+        if($validated->fails()){
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $first_name = $validated_data['first_name'];
@@ -87,8 +87,8 @@ class UserSController extends Controller
 
         $validated_data = $validated->safe()->only(["id","first_name","last_name","email","role","password"]);
 
-        if(is_null($validated->errors())){
-            return response()->json(['status'=>false,'route'=>'back','reason'=>'not validated']);
+        if($validated->fails()){
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $id = $validated_data['id'];
@@ -113,8 +113,8 @@ class UserSController extends Controller
 
         $validated_data = $validated->safe()->only(["id"]);
 
-        if(is_null($validated->errors())){
-            return response()->json(['status'=>false,'route'=>'back','reason'=>'not validated']);
+        if($validated->fails()){
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $id = $validated_data['id'];
