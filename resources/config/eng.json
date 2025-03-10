@@ -1,0 +1,28 @@
+{
+    "admin":{
+        "toolbar":{
+            "name":"Administrator Page",
+            "lang":{
+                "kaz":"Kaz",
+                "rus":"Rus",
+                "eng":"End"
+            },
+            "translate":"translate"
+        },
+        "sidebar":[
+            {
+                "name":"educational organizations"
+            },
+            {
+                "name":"Users"
+            }
+        ],
+        "message":"Selected:"
+    },
+    "teacher":{
+
+    },
+    "student":{
+        
+    }
+}
