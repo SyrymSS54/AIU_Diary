@@ -20,7 +20,7 @@ class OrganizationController extends Controller
     public function item(Request $request,educational_org_model $EduOrgModel)
     {
         $validator = Validator::make($request->all(),[
-            "id"=>"required|exists:mysql.App/Models/educational_org_model,number"
+            "id"=>"required|exists:mysql.App\Models\educational_org_model,number"
         ]);
 
         $validated = $validator->safe()->only(['id']);

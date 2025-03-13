@@ -41,7 +41,7 @@ class UserSController extends Controller
         $validated_data = $validated->safe()->only(['id']);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back',,'errors'=>$validated->errors()],422);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $id = $validated_data['id'];
@@ -67,15 +67,15 @@ class UserSController extends Controller
         $validated = Validator::make($request->all(),[
             "first_name" => 'required|string',
             "last_name" => 'required|string',
-            "email" => 'required|email|unique:mysql.App/Models/User,email',
-            "role" => "required|exists:mysql.app/Models/RoleModel,role",
+            "email" => 'required|email|unique:mysql.App\Models\User,email',
+            "role" => "required|exists:mysql.App\Models\RoleModel,role",
             "password" => "required|between:8,24"
         ]);
 
         $validated_data = $validated->safe()->only(["first_name","last_name","email","role","password"]);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()],422);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $first_name = $validated_data['first_name'];
@@ -106,18 +106,18 @@ class UserSController extends Controller
     public function update(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
-            "id" => "required|numeric|exists:mysql.App/Models/User,id",
+            "id" => "required|numeric|exists:mysql.App\Models\User,id",
             "first_name" => 'string',
             "last_name" => 'string',
-            "email" => 'email|unique:mysql.App/Models/User,email',
-            "role" => "exists:mysql.App/Models/RoleModel,role",
+            "email" => 'email|unique:mysql.App\Models\User,email',
+            "role" => "exists:mysql.App\Models\RoleModel,role",
             "password" => "between:8,24"
         ]);
 
         $validated_data = $validated->safe()->only(["id","first_name","last_name","email","role","password"]);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()],422);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $id = $validated_data['id'];
@@ -144,13 +144,13 @@ class UserSController extends Controller
     public function delete(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
-            "id" => "required|numeric|exists:mysql.App/Models/User,id"
+            "id" => "required|numeric|exists:mysql.App\Models\User,id"
         ]);
 
         $validated_data = $validated->safe()->only(["id"]);
 
         if($validated->fails()){
-            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()],422);
+            return response()->json(['status'=>false,'route'=>'back','errors'=>$validated->errors()]);
         }
 
         $id = $validated_data['id'];
