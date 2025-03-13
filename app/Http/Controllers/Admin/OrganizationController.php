@@ -12,7 +12,7 @@ class OrganizationController extends Controller
 {
     public function list(educational_org_model $EduOrgModel)
     {
-        $org_list = $EduOrgModel::where("created_admin",Auth::id())->get(['name','address','number','description','image']);
+        $org_list = $EduOrgModel::where("created_admin",Auth::id())->get(['id','name','address','number','description','image']);
 
         return response()->json([...$org_list,'status'=>true]);
     }
@@ -31,7 +31,7 @@ class OrganizationController extends Controller
 
         $id = $validated['id'];
 
-        $org = $EduOrgModel::where("created_admin",Auth::id())->where("number",$id)->get(['name','address','number','description','image']);
+        $org = $EduOrgModel::where("created_admin",Auth::id())->where("number",$id)->get(['id','name','address','number','description','image']);
 
 
         return response()->json([...$org,'status'=>true]);
