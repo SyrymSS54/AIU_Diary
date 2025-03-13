@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrganizationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserSController;
 use App\Http\Middleware\AsyncAdminMiddleware;
@@ -10,4 +11,12 @@ Route::controller(UserSController::class)->group(function(){
     Route::post("/users/create","create")->middleware(AsyncAdminMiddleware::class)->name('users.create');
     Route::post("/users/update","update")->middleware(AsyncAdminMiddleware::class)->name('users.update');
     Route::post("/users/delete","delete")->middleware(AsyncAdminMiddleware::class)->name('users.delete');
+});
+
+Route::controller(OrganizationController::class)->group(function(){
+    Route::post("/org/list","list")->middleware(AsyncAdminMiddleware::class)->name("org.list");
+    Route::post("/org/item","item")->middleware(AsyncAdminMiddleware::class)->name("org.item");
+    Route::post("/org/create","create")->middleware(AsyncAdminMiddleware::class)->name("org.create");
+    Route::post("/org/update","update")->middleware(AsyncAdminMiddleware::class)->name("org.update");
+    Route::post("/org/delete","delete")->middleware(AsyncAdminMiddleware::class)->name("org.delete");
 });
