@@ -22,7 +22,7 @@ class UserSController extends Controller
     {
         $users = $user::where("role","NOT LIKE","admin")->paginate(15,['id','first_name','last_name','email','role']);
 
-        return response()->json($users);
+        return response()->json(['users'=>$users,"status"=>true]);
     }
 
     /**
@@ -35,7 +35,7 @@ class UserSController extends Controller
     public function item(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
-            "id"=>"required|numeric",
+            "id"=>"required|numeric|exists:mysql.App\Models\user,id",
         ]);
 
         $validated_data = $validated->safe()->only(['id']);
@@ -52,7 +52,7 @@ class UserSController extends Controller
         }
 
         $users['status'] = true;
-        return response()->json($users);
+        return response()->json(["users"=>$users,"status"=>true]);
     }
 
     /**
