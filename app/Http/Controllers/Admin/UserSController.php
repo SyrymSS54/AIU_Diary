@@ -67,8 +67,8 @@ class UserSController extends Controller
         $validated = Validator::make($request->all(),[
             "first_name" => 'required|string',
             "last_name" => 'required|string',
-            "email" => 'required|email|unique:mysql.users,email',
-            "role" => "required|exists:mysql.role_models,role",
+            "email" => 'required|email|unique:mysql.App/Models/User,email',
+            "role" => "required|exists:mysql.app/Models/RoleModel,role",
             "password" => "required|between:8,24"
         ]);
 
@@ -106,11 +106,11 @@ class UserSController extends Controller
     public function update(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
-            "id" => "required|numeric|exists:mysql.users,id",
+            "id" => "required|numeric|exists:mysql.App/Models/User,id",
             "first_name" => 'string',
             "last_name" => 'string',
-            "email" => 'email|unique:mysql.users,email',
-            "role" => "exists:mysql.role_models,role",
+            "email" => 'email|unique:mysql.App/Models/User,email',
+            "role" => "exists:mysql.App/Models/RoleModel,role",
             "password" => "between:8,24"
         ]);
 
@@ -144,7 +144,7 @@ class UserSController extends Controller
     public function delete(User $user,Request $request)
     {
         $validated = Validator::make($request->all(),[
-            "id" => "required|numeric|exists:mysql.users,id"
+            "id" => "required|numeric|exists:mysql.App/Models/User,id"
         ]);
 
         $validated_data = $validated->safe()->only(["id"]);
