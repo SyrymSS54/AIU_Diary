@@ -52,7 +52,8 @@ class OrganizationController extends Controller
         if($validator->fails()){
             return response()->json(['status'=>false,'route'=>"back","errors"=>$validator->errors()]);
         }
-
+        
+        $EduOrgModel->created_admin = Auth::id();
         $EduOrgModel->number = $validated['number'];
         $EduOrgModel->address = $validated['address'];
         $EduOrgModel->number = $validated['number'];
@@ -83,6 +84,7 @@ class OrganizationController extends Controller
 
         $EduOrgModel = $EduOrgModel::find($validated['id']);
 
+        $EduOrgModel->created_admin = Auth::id();
         isset($validated['number']) ?: $EduOrgModel->number = $validated['number'];
         isset($validated['name']) ?: $EduOrgModel->name = $validated['name'];
         isset($validated['description']) ?: $EduOrgModel->description = $validated['description'];
