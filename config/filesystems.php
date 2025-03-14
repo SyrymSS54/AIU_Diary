@@ -60,6 +60,27 @@ return [
             'report' => false,
         ],
 
+        'organization_preview' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/organization/preview'),
+            'url' => env('APP_URL') . '/organization/preview',
+            'visibility' => 'public'
+        ],
+
+        'program_preview' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/program/preview'),
+            'url' => env('APP_URL') . '/program/preview',
+            'visibility'=>'public'
+        ],
+
+        'curs_preview' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/curs/preview'),
+            'url' => env('APP_URL') . '/curs/preview',
+            'visibility' => 'public'
+        ]
+
     ],
 
     /*

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\CursModel;
+use Illuminate\Support\Facades\Storage;
 
 class CursController extends Controller
 {
@@ -55,23 +56,30 @@ class CursController extends Controller
             "number"=>"required|string|unique:mysql.App\Models\CursModel,number",
             "name"=>"required|string|unuqie:mysql.App\Models\CursModel,name",
             "description"=>"required|string",
-            "image"=>"required|string",
+            "image"=>"required|image",
             "start"=>"required|date",
             "final"=>"required|date",
         ]);
 
-        $validated = $validator->safe()->only(['pro','number','name','description','image','start','fiinal']);
+        $validated = $validator->safe()->only(['pro','number','name','description','start','final']);
 
         if($validator->fails()){
             return response()->json(['status'=>false,"route"=>"back","errors"=>$validator->errors()]);
         }
+
+        //Работа с файлами
+        $image = $request->file('image');
+        $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+
+        Storage::disk('curs_preview')->putFileAs('',$image,$filename);
+        //Окончиваем работа с файлами
 
         $cursModel->created_admin = Auth::id();
         $cursModel->parent = $validated['pro'];
         $cursModel->number = $validated['number'];
         $cursModel->name = $validated['name'];
         $cursModel->description = $validated['description'];
-        $cursModel->image = $validated['image'];
+        $cursModel->image = $filename;
         $cursModel->start = $validated['start'];
         $cursModel->final = $validated['final'];
 
@@ -87,12 +95,12 @@ class CursController extends Controller
             "number"=>"string|unique:mysql.App\Models\CursModel,number",
             "name"=>"string|unuqie:mysql.App\Models\CursModel,name",
             "description"=>"string",
-            "image"=>"string",
+            "image"=>"image",
             "start"=>"date",
             "final"=>"date",
         ]);
 
-        $validated = $validator->safe()->only(["id",'number','name','description','image','start','final']);
+        $validated = $validator->safe()->only(["id",'number','name','description','start','final']);
 
         if($validator->fails()){
             return response()->json(['status'=>false,"route"=>"back","errors"=>$validator->errors()]);
@@ -100,10 +108,22 @@ class CursController extends Controller
 
         $cursModel = $cursModel::find($validated['id']);
 
+        //Работа с файлами
+        if($request->hasFile('image')){
+            //удалить файл
+            Storage::disk('curs_preview')->delete($cursModel->image);
+
+            $image = $request->file('image');
+            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+    
+            Storage::disk('curs_preview')->putFileAs('',$image,$filename);
+            $cursModel->image = $filename;
+        }
+        //Окончиваем работу с файлами
+
         isset($validated['number']) ?: $cursModel->number = $validated['number'];
         isset($validated['name']) ?: $cursModel->name = $validated['name'];
         isset($validated['description']) ?: $cursModel->description = $validated['description'];
-        isset($validated['image']) ?: $cursModel->image = $validated['image'];
         isset($validated['start']) ?: $cursModel->start = $validated['start'];
         isset($validated['final']) ?: $cursModel->final = $validated['final'];
 
@@ -127,7 +147,9 @@ class CursController extends Controller
 
         $pro = $validated['pro'];
         $id = $validated['id'];
-        $cursModel::where("parent",$pro)->where("id",$id)->delete();
+        $cursModel = $cursModel::where("parent",$pro)->where("id",$id);
+        Storage::disk('curs_preview')->delete($cursModel->image);
+        $cursModel->delete();
 
         return response()->json(['status'=>true]);
     }

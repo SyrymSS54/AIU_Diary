@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProgramModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProgramController extends Controller
@@ -55,23 +56,30 @@ class ProgramController extends Controller
             "number"=>"required|string|unique:mysql.App\Models\ProgramModel,number",
             "name"=>"required|string|unuqie:mysql.App\Models\ProgramModel,name",
             "description"=>"required|string",
-            "image"=>"required|string",
+            "image"=>"required|image",
             "start"=>"required|date",
             "final"=>"required|date",
         ]);
 
-        $validated = $validator->safe()->only(['org','number','name','description','image','start','fiinal']);
+        $validated = $validator->safe()->only(['org','number','name','description','start','fiinal']);
 
         if($validator->fails()){
             return response()->json(['status'=>false,"route"=>"back","errors"=>$validator->errors()]);
         }
+
+        //Работа с файлами
+        $image = $request->file('image');
+        $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+
+        Storage::disk('program_preview')->putFileAs('',$image,$filename);
+        //Окончиваем работа с файлами
 
         $programModel->created_admin = Auth::id();
         $programModel->parent = $validated['org'];
         $programModel->number = $validated['number'];
         $programModel->name = $validated['name'];
         $programModel->description = $validated['description'];
-        $programModel->image = $validated['image'];
+        $programModel->image = $filename;
         $programModel->start = $validated['start'];
         $programModel->final = $validated['final'];
 
@@ -87,12 +95,12 @@ class ProgramController extends Controller
             "number"=>"string|unique:mysql.App\Models\ProgramModel,number",
             "name"=>"string|unuqie:mysql.App\Models\ProgramModel,name",
             "description"=>"string",
-            "image"=>"string",
+            "image"=>"image",
             "start"=>"date",
             "final"=>"date",
         ]);
 
-        $validated = $validator->safe()->only(["id",'number','name','description','image','start','final']);
+        $validated = $validator->safe()->only(["id",'number','name','description','start','final']);
 
         if($validator->fails()){
             return response()->json(['status'=>false,"route"=>"back","errors"=>$validator->errors()]);
@@ -100,10 +108,22 @@ class ProgramController extends Controller
 
         $programModel = $programModel::find($validated['id']);
 
+        //Работа с файлами
+        if($request->hasFile('image')){
+            //удалить файл
+            Storage::disk('program_preview')->delete($programModel->image);
+
+            $image = $request->file('image');
+            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+    
+            Storage::disk('program_preview')->putFileAs('',$image,$filename);
+            $programModel->image = $filename;
+        }
+        //Окончиваем работа с файлами
+
         isset($validated['number']) ?: $programModel->number = $validated['number'];
         isset($validated['name']) ?: $programModel->name = $validated['name'];
         isset($validated['description']) ?: $programModel->description = $validated['description'];
-        isset($validated['image']) ?: $programModel->image = $validated['image'];
         isset($validated['start']) ?: $programModel->start = $validated['start'];
         isset($validated['final']) ?: $programModel->final = $validated['final'];
 
@@ -127,7 +147,10 @@ class ProgramController extends Controller
 
         $org = $validated['org'];
         $id = $validated['id'];
-        $programModel::where("parent",$org)->where("id",$id)->delete();
+
+        $programModel = $programModel::where("parent",$org)->where("id",$id);
+        Storage::disk('program_preview')->delete($programModel->image);
+        $programModel->delete();
 
         return response()->json(['status'=>true]);
     }
