@@ -58,7 +58,7 @@ class CursController extends Controller
             "description"=>"required|string",
             "image"=>"required|image",
             "start"=>"required|date",
-            "final"=>"required|date",
+            "final"=>"required|date|after:start",
         ]);
 
         $validated = $validator->safe()->only(['pro','number','name','description','start','final']);
@@ -97,7 +97,7 @@ class CursController extends Controller
             "description"=>"string",
             "image"=>"image",
             "start"=>"date",
-            "final"=>"date",
+            "final"=>"date|after:start",
         ]);
 
         $validated = $validator->safe()->only(["id",'number','name','description','start','final']);

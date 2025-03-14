@@ -58,7 +58,7 @@ class ProgramController extends Controller
             "description"=>"required|string",
             "image"=>"required|image",
             "start"=>"required|date",
-            "final"=>"required|date",
+            "final"=>"required|date|after:start",
         ]);
 
         $validated = $validator->safe()->only(['org','number','name','description','start','fiinal']);
@@ -97,7 +97,7 @@ class ProgramController extends Controller
             "description"=>"string",
             "image"=>"image",
             "start"=>"date",
-            "final"=>"date",
+            "final"=>"date|after:start",
         ]);
 
         $validated = $validator->safe()->only(["id",'number','name','description','start','final']);
