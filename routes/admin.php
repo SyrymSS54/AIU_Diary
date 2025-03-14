@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CursController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Admin\SubjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserSController;
 use App\Http\Middleware\AsyncAdminMiddleware;
@@ -37,4 +38,12 @@ Route::controller(CursController::class)->group(function(){
     Route::post("/curs/create",'create')->middleware(AsyncAdminMiddleware::class)->name('curs.create');
     Route::post("/curs/update",'update')->middleware(AsyncAdminMiddleware::class)->name('curs.update');
     Route::post("/curs/delete",'delete')->middleware(AsyncAdminMiddleware::class)->name('curs.delete');
+});
+
+Route::controller(SubjectController::class)->group(function(){
+    Route::post("/subject/list",'list')->middleware(AsyncAdminMiddleware::class)->name('subject.list');
+    Route::post("/subject/item",'item')->middleware(AsyncAdminMiddleware::class)->name('subject.item');
+    Route::post("/subject/create",'create')->middleware(AsyncAdminMiddleware::class)->name('subject.create');
+    Route::post("/subject/update",'update')->middleware(AsyncAdminMiddleware::class)->name('subject.update');
+    Route::post("/subject/delete",'delete')->middleware(AsyncAdminMiddleware::class)->name('subject.delete');
 });
