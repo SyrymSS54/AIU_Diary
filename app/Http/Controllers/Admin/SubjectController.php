@@ -42,7 +42,7 @@ class SubjectController extends Controller
         $curs = $validated['curs'];
         $id = $validated['id'];
 
-        $subjects = $subjectModel::where("parent",$curs)->where('id',$id)->get(['parent','name','description','number']);
+        $subjects = $subjectModel::with('curs')->where("parent",$curs)->where('id',$id)->get(['parent','name','description','number']);
         return response()->json(['subjects'=>$subjects,'status'=>true]);
     }
 

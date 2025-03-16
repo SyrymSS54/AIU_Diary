@@ -9,4 +9,9 @@ class educational_org_model extends Model
     protected $connection = "mysql";
     protected $table = "educational_org_models";
     protected $fillable = [];
+
+    public function program()
+    {
+        return $this->hasMany(ProgramModel::class,"id","parent");
+    }
 }

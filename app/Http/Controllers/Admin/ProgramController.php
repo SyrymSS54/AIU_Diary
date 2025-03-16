@@ -44,7 +44,7 @@ class ProgramController extends Controller
 
         $org = $validated['org'];
         $id = $validated['id'];
-        $programs = $programModel::where("parent",$org)->where("id",$id)->get(["id","parent","number","name","descripton","image","start","final"]);
+        $programs = $programModel::with(['organization','curs'])->where("parent",$org)->where("id",$id)->get(["id","parent","number","name","descripton","image","start","final"]);
 
         return response()->json(["programs"=>$programs,'status'=>true]);
     }

@@ -32,7 +32,7 @@ class OrganizationController extends Controller
 
         $id = $validated['id'];
 
-        $org = $EduOrgModel::where("created_admin",Auth::id())->where("number",$id)->get(['id','name','address','number','description','image']);
+        $org = $EduOrgModel::with('program')->where("created_admin",Auth::id())->where("number",$id)->get(['id','name','address','number','description','image']);
 
 
         return response()->json([...$org,'status'=>true]);

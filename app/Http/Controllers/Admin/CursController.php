@@ -44,7 +44,7 @@ class CursController extends Controller
 
         $pro = $validated['pro'];
         $id = $validated['id'];
-        $curs = $cursModel::where("parent",$pro)->where("id",$id)->get(["id","parent","number","name","descripton","image","start","final"]);
+        $curs = $cursModel::with(['program','subject'])->where("parent",$pro)->where("id",$id)->get(["id","parent","number","name","descripton","image","start","final"]);
 
         return response()->json(["curs"=>$curs,'status'=>true]);
     }

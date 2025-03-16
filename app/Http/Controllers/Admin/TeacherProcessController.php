@@ -33,7 +33,7 @@ class TeacherProcessController extends Controller
         }
 
         $org = $validated['org'];
-        $teachers = $educationProcessModel->organization()->program()->curs()->subject()->where("role","teacher")->where("org_id",$org)->get();
+        $teachers = $educationProcessModel::with(["organization","program","curs","subject"])->where("role","teacher")->where("org_id",$org)->get();
 
         return response()->json(['status'=>true,'teachers'=>$teachers]);
     }
@@ -53,12 +53,12 @@ class TeacherProcessController extends Controller
             return response()->json(['status'=>false,'route'=>'back','errors'=>$validator->errors()]);
         }
 
-        $educationProcessModel = $educationProcessModel::where('role','teacher');;
+        $educationProcessModel = $educationProcessModel::with(["organization","program","curs","subject"])->where('role','teacher');;
 
-        isset($validated['organization']) ?: $educationProcessModel=$educationProcessModel::where("org_id",$validated['organization']);
-        isset($validated['program']) ?: $educationProcessModel=$educationProcessModel::where("pro_id",$validated['program']);
-        isset($validated['curs']) ?: $educationProcessModel=$educationProcessModel::where('curs_id',$validated['curs']);
-        isset($validated['subject']) ?: $educationProcessModel=$educationProcessModel::where("subject_id",$validated['subject_id']);
+        isset($validated['organization']) ?: $educationProcessModel=$educationProcessModel->where("org_id",$validated['organization']);
+        isset($validated['program']) ?: $educationProcessModel=$educationProcessModel->where("pro_id",$validated['program']);
+        isset($validated['curs']) ?: $educationProcessModel=$educationProcessModel->where('curs_id',$validated['curs']);
+        isset($validated['subject']) ?: $educationProcessModel=$educationProcessModel->where("subject_id",$validated['subject_id']);
 
         return response()->json(['status'=>true,'process'=>$educationProcessModel->get()]);
     }
