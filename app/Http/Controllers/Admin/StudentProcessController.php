@@ -4,20 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CursModel;
+use App\Models\ProgramModel;
 use Illuminate\Http\Request;
 use App\Models\EducationProcessModel;
-use App\Models\ProgramModel;
 use App\Models\SubjectModel;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
-class TeacherProcessController extends Controller
+class StudentProcessController extends Controller
 {
-    public function teachers(EducationProcessModel $educationProcessModel,User $user,Request $request)
+    public function students(EducationProcessModel $educationProcessModel,Request $request,User $user)
     {
-        $teachers = $user::doesntHave('organization')->where("role","teacher")->get(['email','role','first_name','last_name','id']);
+        $students = $user::doesntHave('organization')->where("role","student")->get(['email','role','first_name','last_name','id']);
 
-        return response()->json(['teachers'=>$teachers,'status'=>true]);
+        return response()->json(['teachers'=>$students,'status'=>true]);
     }
 
     public function list(EducationProcessModel $educationProcessModel,Request $request)
@@ -33,9 +33,9 @@ class TeacherProcessController extends Controller
         }
 
         $org = $validated['org'];
-        $teachers = $educationProcessModel::with(["organization","program","curs","subject"])->where("role","teacher")->where("org_id",$org)->get();
+        $students = $educationProcessModel::with(["organization","program","curs","subject"])->where("role","student")->where("org_id",$org)->get();
 
-        return response()->json(['status'=>true,'teachers'=>$teachers]);
+        return response()->json(['status'=>true,'teachers'=>$students]);
     }
 
     public function get_process(EducationProcessModel $educationProcessModel,Request $request)
@@ -53,7 +53,7 @@ class TeacherProcessController extends Controller
             return response()->json(['status'=>false,'route'=>'back','errors'=>$validator->errors()]);
         }
 
-        $educationProcessModel = $educationProcessModel::with(["organization","program","curs","subject"])->where('role','teacher');;
+        $educationProcessModel = $educationProcessModel::with(["organization","program","curs","subject"])->where('role','student');;
 
         isset($validated['organization']) ?: $educationProcessModel=$educationProcessModel->where("org_id",$validated['organization']);
         isset($validated['program']) ?: $educationProcessModel=$educationProcessModel->where("pro_id",$validated['program']);
@@ -80,7 +80,7 @@ class TeacherProcessController extends Controller
         }
 
         $educationProcessModel->user_id = $validated['user_id'];
-        $educationProcessModel->role = 'teacher';
+        $educationProcessModel->role = 'student';
         $educationProcessModel->org_id = $validated['organization'];
 
         if(isset($validated['program']) & ProgramModel::find($validated['program'])->parent == $validated['organization']){
@@ -140,7 +140,6 @@ class TeacherProcessController extends Controller
         $educationProcessModel->save();
 
         return response()->json(['status'=>true]);
-        
     }
 
     public function delete(EducationProcessModel $educationProcessModel,Request $request)
